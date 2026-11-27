@@ -38,6 +38,7 @@ jobs:
           path: uplift-modeling-main/frontend/package-lock.json
 
       - name: Commit audited frontend lockfile
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
