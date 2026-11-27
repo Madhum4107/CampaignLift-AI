@@ -55,3 +55,8 @@ def test_readiness_reports_not_ready_for_no_targetable_customers():
     frame=pd.DataFrame({"uplift":[-.1,-.2],"recommended_action":["Avoid","Avoid"]})
     result=campaign_readiness(frame,{})
     assert result["overall"]=="not_ready"
+
+def test_guardrails_never_target_nonpositive_uplift_even_with_negative_minimum(customers):
+    result=apply_guardrails(customers,budget=100,cost_per_contact=0,revenue_per_incremental_conversion=0,min_uplift=-1)
+    assert result["selected_customers"]==[10,20,30]
+    assert all(customers.set_index("customer_id").loc[i,"uplift"]>0 for i in result["selected_customers"])
