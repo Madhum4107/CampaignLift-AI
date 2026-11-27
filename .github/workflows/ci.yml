@@ -1,6 +1,6 @@
 name: CampaignLift CI
 permissions:
-  contents: write
+  contents: read
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
@@ -25,24 +25,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install frontend packages
-        run: cd uplift-modeling-main/frontend && npm install
-      - name: Apply compatible security updates
-        run: cd uplift-modeling-main/frontend && npm audit fix --audit-level=high
+      - name: Install locked dependencies
+        run: cd uplift-modeling-main/frontend && npm ci
+      - name: Audit dependencies
+        run: cd uplift-modeling-main/frontend && npm audit --audit-level=high
       - name: Production build
         run: cd uplift-modeling-main/frontend && npm run build
-      - name: Upload generated frontend lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: campaignlift-frontend-lockfile
-          path: uplift-modeling-main/frontend/package-lock.json
-
-      - name: Commit audited frontend lockfile
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add uplift-modeling-main/frontend/package.json uplift-modeling-main/frontend/package-lock.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'chore(frontend): lock audited dependencies'
-          git push
