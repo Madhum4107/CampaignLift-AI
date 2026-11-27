@@ -25,5 +25,7 @@ jobs:
           node-version: "20"
       - name: Install frontend packages
         run: cd uplift-modeling-main/frontend && npm install
+      - name: Apply compatible security updates
+        run: cd uplift-modeling-main/frontend && npm audit fix --audit-level=high
       - name: Production build
         run: cd uplift-modeling-main/frontend && npm run build
