@@ -44,6 +44,9 @@ def apply_guardrails(customers, budget, cost_per_contact, revenue_per_incrementa
     if "segment_label" in out.columns and exclude_segments:
         out=out[~out.segment_label.isin(exclude_segments)]
     out=out[out.uplift >= min_uplift]
+    # Never recommend a non-positive estimated incremental response, even if a
+    # user sets a permissive minimum or the contact cost is zero.
+    out=out[out.uplift > 0]
     # Enforce contact-level economic viability in addition to uplift and budget.
     out=out[(out.uplift * revenue_per_incremental_conversion) >= cost_per_contact]
     if cost_per_contact > 0:
