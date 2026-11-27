@@ -44,6 +44,8 @@ def apply_guardrails(customers, budget, cost_per_contact, revenue_per_incrementa
     if "segment_label" in out.columns and exclude_segments:
         out=out[~out.segment_label.isin(exclude_segments)]
     out=out[out.uplift >= min_uplift]
+    # Enforce contact-level economic viability in addition to uplift and budget.
+    out=out[(out.uplift * revenue_per_incremental_conversion) >= cost_per_contact]
     if cost_per_contact > 0:
         capacity=int(budget//cost_per_contact)
     else:
