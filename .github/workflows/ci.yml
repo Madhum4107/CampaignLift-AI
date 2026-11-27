@@ -29,3 +29,8 @@ jobs:
         run: cd uplift-modeling-main/frontend && npm audit fix --audit-level=high
       - name: Production build
         run: cd uplift-modeling-main/frontend && npm run build
+      - name: Upload generated frontend lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: campaignlift-frontend-lockfile
+          path: uplift-modeling-main/frontend/package-lock.json
