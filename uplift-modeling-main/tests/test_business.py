@@ -19,11 +19,11 @@ def test_segments_are_assigned_without_mutating_source():
     assert "segment_label" not in source.columns
 
 def test_budget_optimizer_enforces_economic_and_budget_constraints(customers):
-    result=optimize_budget(customers,budget=1.0,cost_per_contact=.5,revenue_per_incremental_conversion=2)
+    result=optimize_budget(customers,budget=.4,cost_per_contact=.2,revenue_per_incremental_conversion=2)
     assert result["targeted_count"] <= 2
-    assert result["total_cost"] <= 1.0
+    assert result["total_cost"] <= .4
     assert result["selected_customers"] == [10,20]
-    assert result["expected_profit"] == pytest.approx(.4)
+    assert result["expected_profit"] == pytest.approx(.5)
 
 def test_zero_contact_cost_and_zero_budget_are_safe(customers):
     free=optimize_budget(customers,10,0,2)
